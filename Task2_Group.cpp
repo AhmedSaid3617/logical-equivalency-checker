@@ -4,26 +4,17 @@
 #include <sstream>
 
 #include "Expression.h"
+#include "Postfix.h"
 
 using namespace std;
 
-
-vector<string> tokenize(string expression){
-    std::vector<std::string> tokens;
-
-    // Use stringstream to tokenize the string
-    std::stringstream ss(expression);
-    std::string word;
-
-    while (ss >> word) {
-        tokens.push_back(word);
-    }
-
-    return tokens;
-}
-
 int main(){
-    tokenize("Hello sdj sak s");
+
+    /* vector<string> inputs = {"a", "b", "c"};
+
+    std::string input_expression = "b&c | a & ~(a|b)";
+    std::string prefix_expr = infixToPrefix(input_expression); */
+
     Input in1 = Input();
     Input in2 = Input();
     Input in3 = Input();
@@ -31,11 +22,11 @@ int main(){
     Or or_exp = Or(&in1, &in2);
     And and_exp = And(&or_exp, &in3);
 
-    in1.set_input(true);
+    in1.set_input(false);
     in2.set_input(false);
     in3.set_input(false);
 
-    if (and_exp.evaluate())
+    if (or_exp.evaluate())
     {
         cout << "True";
     }

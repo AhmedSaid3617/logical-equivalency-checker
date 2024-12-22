@@ -1,11 +1,12 @@
+#include <string>
+
 class Expression
 {
 protected:
-    Expression* left;
-    Expression* right;
+    Expression* child;
 public:
     Expression(/* args */);
-    Expression(Expression* left, Expression* right);
+    //Expression(Expression* left, Expression* right);
     virtual bool evaluate();
     ~Expression();
 };
@@ -14,7 +15,8 @@ public:
 class And: public Expression
 {
 private:
-    /* data */
+    Expression* left;
+    Expression* right;
 public:
     And(/* args */);
     And(Expression* left, Expression* right);
@@ -27,7 +29,8 @@ public:
 class Or: public Expression
 {
 private:
-    /* data */
+    Expression* left;
+    Expression* right;
 public:
     Or(/* args */);
     Or(Expression* left, Expression* right);
@@ -35,15 +38,30 @@ public:
     ~Or();
 };
 
+/********************************* */
+
+class Not: public Expression
+{
+private:
+    /* data */
+public:
+    Not(/* args */);
+    Not(Expression* input);
+    bool evaluate() override;
+    ~Not();
+};
 
 /********************************* */
 class Input : public Expression
 {
 private:
     bool _input;
+    std::string name;
 public:
-    Input(/* args */);
+    Input();
+    Input(std::string name);
     void set_input(bool input);
+    std::string get_name();
     bool evaluate() override ;
     ~Input();
 };

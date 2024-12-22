@@ -4,12 +4,6 @@ Expression::Expression(/* args */)
 {
 }
 
-Expression::Expression(Expression *left, Expression *right)
-{
-    this->left = left;
-    this->right = right;
-}
-
 bool Expression::evaluate()
 {
     return false;
@@ -24,8 +18,10 @@ And::And(/* args */)
 {
 }
 
-And::And(Expression *left, Expression *right):Expression(left, right)
+And::And(Expression *left, Expression *right)
 {
+    this->left = left;
+    this->right = right;
 }
 
 And::~And()
@@ -43,9 +39,19 @@ Input::Input(/* args */)
 {
 }
 
+Input::Input(std::string name)
+{
+    this->name = name;
+}
+
 void Input::set_input(bool input)
 {
     this->_input = input;
+}
+
+std::string Input::get_name()
+{
+    return this->name;
 }
 
 bool Input::evaluate()
@@ -63,9 +69,10 @@ Or::Or()
 {
 }
 
-Or::Or(Expression *left, Expression *right) : Expression(left, right)
+Or::Or(Expression *left, Expression *right)
 {
-
+    this->left = left;
+    this->right = right;
 }
 
 bool Or::evaluate()
@@ -74,5 +81,25 @@ bool Or::evaluate()
 }
 
 Or::~Or()
+{
+}
+
+/********************************* */
+
+Not::Not()
+{
+}
+
+Not::Not(Expression *input)
+{
+    this->child = input;
+}
+
+bool Not::evaluate()
+{
+    return !child->evaluate();
+}
+
+Not::~Not()
 {
 }

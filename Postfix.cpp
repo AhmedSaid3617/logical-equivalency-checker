@@ -1,8 +1,4 @@
-#include <iostream>
-#include <stack>
-#include <string>
-#include <algorithm>
-#include <cctype>
+#include "Postfix.h"
 
 bool isOperator(char c) {
     return c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '|' || c == '&' || c == '~';
@@ -57,11 +53,4 @@ std::string infixToPrefix(const std::string &infix) {
 
     std::reverse(postfix.begin(), postfix.end());
     return postfix;
-}
-
-int main() {
-    std::string infix = "a&b|~(c&b)";
-    std::cout << "Infix: " << infix << "\n";
-    std::cout << "Prefix: " << infixToPrefix(infix) << "\n";
-    return 0;
 }
