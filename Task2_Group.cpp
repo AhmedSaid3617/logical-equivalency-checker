@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <math.h>
 
 #include "Expression.h"
 #include "Postfix.h"
@@ -10,12 +11,40 @@ using namespace std;
 
 int main(){
 
-    /* vector<string> inputs = {"a", "b", "c"};
+    std::string input_expression = "a&(~b|c)";
+    std::string prefix_expr = infixToPrefix(input_expression);
+    vector<Expression*> inputs;
 
-    std::string input_expression = "b&c | a & ~(a|b)";
-    std::string prefix_expr = infixToPrefix(input_expression); */
+    Expression my_expr = Expression(prefix_expr, inputs);
 
-    Input in1 = Input();
+    /* ((Input*)inputs[0])->set_input(false);
+    ((Input*)inputs[1])->set_input(false);
+    ((Input*)inputs[2])->set_input(false); */
+
+    cout << "      \t";
+    for (int i = inputs.size() -1; i >= 0; i--)
+    {
+        cout << ((Input*)inputs[i])->get_name() << "\t";
+    }
+    
+    cout << endl;
+
+    for (int i = 0; i < pow(2, inputs.size()); i++)
+    {
+        cout << "Inputs:\t";
+        for (int j = inputs.size() -1; j >= 0; j--)
+        {
+            bool state = !(i & 1<<j);
+            ((Input*)inputs[j])->set_input(state);
+            cout << state << "\t";
+        }
+
+        cout << "Outputs:\t";
+        cout << my_expr.evaluate() << endl;
+    }
+
+
+    /* Input in1 = Input();
     Input in2 = Input();
     Input in3 = Input();
 
@@ -33,7 +62,7 @@ int main(){
     else
     {
         cout << "False";
-    }
+    } */
     
     
     
