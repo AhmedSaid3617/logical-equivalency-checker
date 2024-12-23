@@ -3,13 +3,18 @@
 
 class Expression
 {
+private:
+    
 protected:
     Expression* child;
+    char symbol;
+    virtual char get_symbol();
 
 public:
     Expression(/* args */);
     Expression(std::string &expression_str, std::vector<Expression*> &inputs);
     virtual bool evaluate();
+    virtual void print();
     ~Expression();
 };
 
@@ -24,6 +29,7 @@ protected:
 
 public:
     TwoInputExpression(/* args */);
+    void print() override;
     ~TwoInputExpression();
 };
 
@@ -37,6 +43,7 @@ public:
     And(Expression* left, Expression* right);
     And(std::string &expression_str, std::vector<Expression*> &inputs);
     bool evaluate() override;
+    char get_symbol() override;
     ~And();
 };
 
@@ -51,6 +58,7 @@ public:
     Or(Expression* left, Expression* right);
     Or(std::string &expression_str, std::vector<Expression*> &inputs);
     bool evaluate() override;
+    char get_symbol() override;
     ~Or();
 };
 
@@ -59,12 +67,13 @@ public:
 class Not: public Expression
 {
 private:
-    /* data */
+
 public:
     Not(/* args */);
     Not(Expression* input);
     Not(std::string &expression_str, std::vector<Expression*> &inputs);
     bool evaluate() override;
+    char get_symbol() override;
     ~Not();
 };
 
@@ -73,13 +82,13 @@ class Input : public Expression
 {
 private:
     bool _input;
-    char name;
 public:
     Input();
     Input(char name);
     void set_input(bool input);
-    char get_name();
+    char get_symbol();
     bool evaluate() override ;
+    static bool compare(Expression* in1, Expression* in2);
     ~Input();
 };
 

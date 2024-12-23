@@ -1,6 +1,11 @@
 #include "Expression.h"
 #include "Postfix.h"
 
+char Expression::get_symbol()
+{
+    return 0;
+}
+
 Expression::Expression(/* args */)
 {
 }
@@ -13,7 +18,7 @@ Expression::Expression(std::string &expression_str, std::vector<Expression *> &i
         // See if the input has already been recorded.
         for (Expression *input : inputs)
         {
-            if (((Input*)input)->get_name() == expression_str[0])
+            if (((Input *)input)->get_symbol() == expression_str[0])
             {
                 // Add it to the input list to be used in truth table generation.
                 this->child = input;
@@ -61,14 +66,35 @@ bool Expression::evaluate()
     return this->child->evaluate();
 }
 
+void Expression::print()
+{
+    // Applies for one-child expressions.
+    std::cout << this->get_symbol();
+    if (child == nullptr)
+    {
+        return;
+    }
+    else
+    {
+        child->print();
+    }
+}
+
 Expression::~Expression()
 {
 }
 
 /************************************* */
 
-TwoInputExpression::TwoInputExpression(){
+TwoInputExpression::TwoInputExpression()
+{
+}
 
+void TwoInputExpression::print()
+{
+    this->left->print();
+    std::cout << this->get_symbol();
+    this->right->print();
 }
 
 TwoInputExpression::TwoInputExpression(std::string &expression_str, std::vector<Expression *> &inputs)
@@ -79,7 +105,7 @@ TwoInputExpression::TwoInputExpression(std::string &expression_str, std::vector<
         // See if the input has already been recorded.
         for (Expression *input : inputs)
         {
-            if (((Input*)input)->get_name() == expression_str[0])
+            if (((Input *)input)->get_symbol() == expression_str[0])
             {
                 // Add it to the input list to be used in truth table generation.
                 this->left = input;
@@ -126,7 +152,7 @@ TwoInputExpression::TwoInputExpression(std::string &expression_str, std::vector<
         // See if the input has already been recorded.
         for (Expression *input : inputs)
         {
-            if (((Input*)input)->get_name() == expression_str[0])
+            if (((Input *)input)->get_symbol() == expression_str[0])
             {
                 // Add it to the input list to be used in truth table generation.
                 this->right = input;
@@ -168,12 +194,9 @@ TwoInputExpression::TwoInputExpression(std::string &expression_str, std::vector<
     }
 }
 
-
-TwoInputExpression::~TwoInputExpression(){
-
+TwoInputExpression::~TwoInputExpression()
+{
 }
-
-
 
 /************************************* */
 And::And(/* args */)
@@ -199,14 +222,19 @@ bool And::evaluate()
     return this->left->evaluate() && this->right->evaluate();
 }
 
+char And::get_symbol()
+{
+    return '&';
+}
+
 /************************************** */
 Input::Input(/* args */)
 {
 }
 
-Input::Input(char name)
+Input::Input(char symbol)
 {
-    this->name = name;
+    this->symbol = symbol;
 }
 
 void Input::set_input(bool input)
@@ -214,14 +242,19 @@ void Input::set_input(bool input)
     this->_input = input;
 }
 
-char Input::get_name()
+char Input::get_symbol()
 {
-    return this->name;
+    return this->symbol;
 }
 
 bool Input::evaluate()
 {
     return this->_input;
+}
+
+bool Input::compare(Expression *in1, Expression *in2)
+{
+    return ((Input*)(in1))->symbol > ((Input*)(in2))->symbol;
 }
 
 Input::~Input()
@@ -249,6 +282,11 @@ bool Or::evaluate()
     return this->left->evaluate() || this->right->evaluate();
 }
 
+char Or::get_symbol()
+{
+    return '|';
+}
+
 Or::~Or()
 {
 }
@@ -266,12 +304,16 @@ Not::Not(Expression *input)
 
 Not::Not(std::string &expression_str, std::vector<Expression *> &inputs) : Expression(expression_str, inputs)
 {
-    
 }
 
 bool Not::evaluate()
 {
     return !child->evaluate();
+}
+
+char Not::get_symbol()
+{
+    return '~';
 }
 
 Not::~Not()
