@@ -15,8 +15,23 @@ bool is_satisfiable(vector<bool> &result1, vector<bool> &result2, vector<vector<
 int main()
 {
 
-    std::string input_expression1 = "a&~c|b";
-    std::string input_expression2 = "~(b&c&a)";
+    std::string input_expression1 = "(a&b) | (b|c)&(b&c) | ~(b&c)&(b&c)";
+    std::string input_expression2 = "b&(a|c)";
+
+    cout << "The input expressions must be in c/c++ form\n";
+    cout << "Given example: (a&b) | (b|c)&(b&c) | ~(b&c)&(b&c)\n";
+    cout << "Simplified version: b&(a|c)\n";
+    cout << "Or you can try any two logical expressions.\n";
+    cout << "The expressions can have any number of variables but must be an equal number\n";
+    cout << "All variables must be exactly one character.\n";
+
+    /* // Taking first string input
+    std::cout << "Enter the first expression: ";
+    std::getline(std::cin, input_expression1);
+
+    // Taking second string input
+    std::cout << "Enter the second expression: ";
+    std::getline(std::cin, input_expression2); */
 
     vector<bool> result1;
     vector<bool> result2;
@@ -26,8 +41,10 @@ int main()
 
     vector<Expression *> inputs1;
     vector<Expression *> inputs2;
-
+    
+    cout << input_expression1 << endl;
     get_truth_table(input_expression1, result1, inputs_matrix1, inputs1);
+    cout << "**********************\n" << input_expression1 << endl;
     get_truth_table(input_expression2, result2, inputs_matrix2, inputs2);
 
     bool equivalent = true;
@@ -67,12 +84,64 @@ int main()
 
     cout << "Expressions are not satisfiable." << endl;
 
+    string expression1_cpy = input_expression1;
+    string expression2_cpy = input_expression2;
     while (!satisfiable)
     {
-        /* code */
+        // Try to edit expression 1.
+        for (int i = 0; i < expression1_cpy.size(); i++)
+        {
+            vector<bool> result1;
+            vector<bool> result2;
+
+            vector<vector<bool>> inputs_matrix1;
+            vector<vector<bool>> inputs_matrix2;
+
+            vector<Expression *> inputs1;
+            vector<Expression *> inputs2;
+            if (expression1_cpy[i] == '&')
+            {
+                expression1_cpy[i] = '|';
+                cout << "Trying expression 1 = " << expression1_cpy << endl;
+                get_truth_table(expression1_cpy, result1, inputs_matrix1, inputs1);
+                get_truth_table(expression2_cpy, result2, inputs_matrix2, inputs2);
+
+                if (is_satisfiable(result1, result2, inputs_matrix1, inputs1))
+                {
+                    cout << "The expressions become satisfiable if you change expression 1 to " << expression1_cpy;
+                    return 0;
+                }
+            }
+            expression1_cpy = input_expression1;
+        }
+
+        // Then try to edit expression 2.
+        for (int i = 0; i < expression2_cpy.size(); i++)
+        {
+            vector<bool> result1;
+            vector<bool> result2;
+
+            vector<vector<bool>> inputs_matrix1;
+            vector<vector<bool>> inputs_matrix2;
+
+            vector<Expression *> inputs1;
+            vector<Expression *> inputs2;
+            if (expression2_cpy[i] == '&')
+            {
+                expression2_cpy[i] = '|';
+                cout << "Trying expression2 =" << expression2_cpy << endl;
+                get_truth_table(expression1_cpy, result1, inputs_matrix1, inputs1);
+                get_truth_table(expression2_cpy, result2, inputs_matrix2, inputs2);
+
+                if (is_satisfiable(result1, result2, inputs_matrix1, inputs1))
+                {
+                    cout << "The expressions become satisfiable if you change expression 2 to " << expression2_cpy << endl;
+                    return 0;
+                }
+            }
+            expression2_cpy = input_expression2;
+        }
     }
-    
-    
 }
 
 bool is_satisfiable(vector<bool> &result1, vector<bool> &result2, vector<vector<bool>> &inputs_matrix, vector<Expression *> inputs)

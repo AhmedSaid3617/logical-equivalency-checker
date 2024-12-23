@@ -22,6 +22,7 @@ Expression::Expression(std::string &expression_str, std::vector<Expression *> &i
             {
                 // Add it to the input list to be used in truth table generation.
                 this->child = input;
+                expression_str.erase(expression_str.begin());
                 return;
             }
         }
@@ -102,22 +103,27 @@ TwoInputExpression::TwoInputExpression(std::string &expression_str, std::vector<
     // For the left child.
     if (!isOperator(expression_str[0]))
     {
+        bool found = false;
         // See if the input has already been recorded.
         for (Expression *input : inputs)
         {
             if (((Input *)input)->get_symbol() == expression_str[0])
             {
-                // Add it to the input list to be used in truth table generation.
                 this->left = input;
-                return;
+                expression_str.erase(expression_str.begin());
+                found = true;
+                break;
             }
         }
 
-        // If it's new then create an input and add it to the list.
-        Input *new_input = new Input(expression_str[0]);
-        this->left = new_input;
-        inputs.push_back(new_input);
-        expression_str.erase(expression_str.begin());
+        if (!found)
+        {
+            // If it's new then create an input and add it to the list.
+            Input *new_input = new Input(expression_str[0]);
+            this->left = new_input;
+            inputs.push_back(new_input);
+            expression_str.erase(expression_str.begin());
+        }
     }
     else
     {
@@ -150,21 +156,27 @@ TwoInputExpression::TwoInputExpression(std::string &expression_str, std::vector<
     if (!isOperator(expression_str[0]))
     {
         // See if the input has already been recorded.
+        bool found = false;
         for (Expression *input : inputs)
         {
             if (((Input *)input)->get_symbol() == expression_str[0])
             {
                 // Add it to the input list to be used in truth table generation.
                 this->right = input;
-                return;
+                expression_str.erase(expression_str.begin());
+                found = true;
+                break;
             }
         }
 
-        // If it's new then create an input and add it to the list.
-        Input *new_input = new Input(expression_str[0]);
-        this->right = new_input;
-        inputs.push_back(new_input);
-        expression_str.erase(expression_str.begin());
+        if (!found)
+        {
+            // If it's new then create an input and add it to the list.
+            Input *new_input = new Input(expression_str[0]);
+            this->right = new_input;
+            inputs.push_back(new_input);
+            expression_str.erase(expression_str.begin());
+        }
     }
     else
     {
@@ -254,7 +266,7 @@ bool Input::evaluate()
 
 bool Input::compare(Expression *in1, Expression *in2)
 {
-    return ((Input*)(in1))->symbol > ((Input*)(in2))->symbol;
+    return ((Input *)(in1))->symbol > ((Input *)(in2))->symbol;
 }
 
 Input::~Input()
